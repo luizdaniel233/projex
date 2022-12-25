@@ -1,0 +1,366 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "API PROJEX",
+    "description": "Essa API tem como objetivo a demonstração do correto funcionamento das rotas, bem como ser um norteado para as equipes de Frontend e Testers."
+  },
+  "paths": {
+    "/login": {
+      "post": {
+        "tags": [
+          "Login"
+        ],
+        "description": "Auth User",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Solicitação Inválida"
+          },
+          "404": {
+            "description": "Não Encontrado"
+          },
+          "500": {
+            "description": "Erro Interno do Servidor"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "enrollment": {
+                    "example": "any"
+                  },
+                  "password": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "tags": [
+          "Login"
+        ],
+        "description": "Logout User",
+        "parameters": [],
+        "responses": {},
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/create/user": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "Criar usuário",
+        "parameters": [
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Criado"
+          },
+          "400": {
+            "description": "Solicitação Inválida"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "500": {
+            "description": "Erro Interno do Servidor"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "example": "any"
+                  },
+                  "password": {
+                    "example": "any"
+                  },
+                  "confirm_password": {
+                    "example": "any"
+                  },
+                  "enrollment": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/edit/user": {
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "description": "Editar usuário",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Solicitação Inválida"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Não Encontrado"
+          },
+          "500": {
+            "description": "Erro Interno do Servidor"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "example": "any"
+                  },
+                  "enrollment": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/status/user": {
+      "patch": {
+        "tags": [
+          "User"
+        ],
+        "description": "Editar status do usuário",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Não Encontrado"
+          },
+          "500": {
+            "description": "Erro Interno do Servidor"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/user/activate": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "Listar usuários ativados",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "qtd",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "500": {
+            "description": "Erro Interno do Servidor"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/user/deactivate": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "Listar usuários desativados",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "qtd",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-forwarded-for",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "500": {
+            "description": "Erro Interno do Servidor"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

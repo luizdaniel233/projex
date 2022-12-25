@@ -13,7 +13,7 @@ class User {
       if (err) res.status(500).send({ message: err });
       else {
         if (ress.length == 0)
-          res.status(404).send({ message: "Usuario nao encontrado." });
+          res.status(404).send({ message: "Usuário não encontrado." });
         else {
           const validate_password = bcrypt.compare(
             data.password,
@@ -42,8 +42,31 @@ class User {
     });
   }
 
-  list(data, res) {
-    let query = `SELECT * FROM projex.USER`;
+  listA(data, res) {
+    let query = `SELECT * FROM projex.USER WHERE user_status = 1 `;
+    db.query(query, (err, resultado) => {
+      if (err) res.status(500).send({ message: err });
+      else {
+        resultado.forEach((element) => {
+          delete element.password;
+        });
+
+        if (+data.search) {
+          resultado = sea.searchListUser(data, resultado);
+          res
+            .status(200)
+            .send(pagination.format(resultado, data.page, data.qtd));
+        } else {
+          res
+            .status(200)
+            .send(pagination.format(resultado, data.page, data.qtd));
+        }
+      }
+    });
+  }
+
+  listD(data, res) {
+    let query = `SELECT * FROM projex.USER WHERE user_status = 0`;
     db.query(query, (err, resultado) => {
       if (err) res.status(500).send({ message: err });
       else {
@@ -90,11 +113,11 @@ class User {
           if (err) res.status(500).send({ message: err });
           else {
             if (ress.length == 0) {
-              query = `INSERT INTO projex.USER(user_name,user_password,user_enrollment) VALUES ('${valide.capitalizeName(
+              query = `INSERT INTO projex.USER(user_name,user_password,user_enrollment,user_status) VALUES ('${valide.capitalizeName(
                 data.name
               )}','${await bcrypt.hash(data.password, 10)}','${
                 data.enrollment
-              }')`;
+              }',1)`;
               db.query(query, (err, resultado) => {
                 if (err) res.status(500).send({ message: err });
                 else {
@@ -112,6 +135,86 @@ class User {
     } else {
       res.status(400).send({ message: "Preencha todos os campos!" });
     }
+  }
+
+  edit(data, res) {
+    let query = `SELECT * FROM projex.USER WHERE user_id = ${data.id} AND user_status = 1`;
+    db.query(query, (err, ressult) => {
+      if (err) res.status(500).send({ message: err });
+      else {
+        if (ressult.length == 0)
+          res
+            .status(404)
+            .send({
+              message: "Usuário não encontrado ou ele se encontra desativado!",
+            });
+        else if (!valide.validateName(data.name))
+          res.status(400).send({ message: "Nome nao atende aos requisitos." });
+        else if (!valide.validateEnrollment(data.enrollment))
+          res
+            .status(400)
+            .send({ message: "Matricula nao atende os requisitos" });
+        else {
+          db.query(query, (err, ress) => {
+            if (err) res.status(500).send({ message: err });
+            else {
+              if (
+                ress.length != 0 &&
+                ress[0].user_enrollment != data.enrollment
+              ) {
+                res.status(400).send({ message: "Matrícula ja utilizada." });
+              } else {
+                query = `UPDATE projex.USER SET user_name ='${data.name}',user_enrollment = '${data.enrollment}' WHERE user_id = ${data.id} `;
+                db.query(query, (error) => {
+                  if (error) res.status(400).send({ message: error });
+                  else res.status(200).send({ message: "Usuário editado!" });
+                });
+              }
+            }
+          });
+        }
+      }
+    });
+  }
+
+  activate(data, res) {
+    let query = `SELECT * FROM projex.USER WHERE user_id = ${data.user_id}`;
+    db.query(query, (err, resultado) => {
+      if (err) res.status(500).send({ message: err });
+      else {
+        if (resultado.length == 0)
+          res.status(404).send({ message: "Usuário não encontrado!" });
+        else {
+          query = ` UPDATE projex.USER SET user_status = 1 WHERE user_id = ${data.user_id}`;
+          db.query(query, (err) => {
+            if (err) res.status(500).send({ message: err });
+            else res.status(200).send({ message: "Usuário editado!" });
+          });
+        }
+      }
+    });
+  }
+
+  deactivate(data, res) {
+    let query = `SELECT * FROM projex.USER WHERE user_id = ${data.user_id}`;
+    db.query(query, (err, resultado) => {
+      if (err) res.status(500).send({ message: err });
+      else {
+        if (resultado.length == 0)
+          res.status(404).send({ message: "Usuário não encontrado!" });
+        else {
+          query = ` UPDATE projex.USER SET user_status = 0 WHERE user_id = ${data.user_id}`;
+          db.query(query, (err) => {
+            if (err) res.status(500).send({ message: err });
+            else res.status(200).send({ message: "Usuário editado!" });
+          });
+        }
+      }
+    });
+  }
+
+  logout(res) {
+    res.status(200).send({ auth: false, token: false });
   }
 }
 
